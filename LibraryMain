@@ -1,0 +1,143 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+
+public class LibraryMain {
+    public static void main(String[] args) {
+        
+        Scanner scan = new Scanner(System.in);
+        
+        String title, author, isbn;
+        int numCopies;
+        Library lib = new Library();
+        Book book;
+
+        boolean loop = true;
+
+        while(loop) {
+            System.out.println("--------------LIBRARY MANAGEMNT SYSTEM---------------");
+            System.out.println("1.) Add a book\n2.) Borrow a book\n3.) Return a book\n4.) Display Available books\n5.) EXIT\n");
+            System.out.print("Select an option: ");
+            int choice = scan.nextInt();
+            scan.nextLine();
+
+            switch(choice) {
+                case 1: 
+                    System.out.println("Enter Book Title: ");
+                    title = scan.nextLine();
+                    System.out.println("Enter Book Author: ");
+                    author = scan.nextLine();
+                    System.out.println("Enter ISBN: ");
+                    isbn = scan.nextLine();
+                    System.out.println("Number of copies: ");
+                    numCopies = scan.nextInt();
+                    book = new Book(title, author, isbn, numCopies);
+                    lib.addBook(book);
+                    break;
+                case 2: 
+                    System.out.println("Title of the book: ");
+                    title = scan.nextLine();
+                    lib.borrowBook(title);
+                    break;
+                case 3: 
+                    System.out.println("Title of the book: ");
+                    title = scan.nextLine();
+                    lib.returnBook(title);
+                    break;
+                case 4: 
+                    lib.displayAvailableBooks();
+                    break;
+                case 5:
+                    loop = false;
+                    break;
+                default:
+            }
+        }
+
+    }
+}
+
+class Book {
+
+    private final String title, author, isbn;
+    private int numCopies, currCopies;
+
+    public Book(String title, String author, String isbn, int numCopies) {
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.numCopies = numCopies;
+        this.currCopies = numCopies;
+    }
+
+    public boolean isAvailable() {
+        return currCopies > 0;
+    }
+
+    public String getTitle(){
+        return title;
+    }
+
+    public void borrowBook() {
+        if (isAvailable()) {
+            currCopies--;
+            System.out.println("You have successfully borrowed \"" + title + "\".");
+        }else 
+            System.out.println("Sorry, no copies of \"" + title + "\" are available at the moment.");
+        }
+
+    public void returnBook() {
+        if(currCopies < numCopies) {
+            currCopies++;
+            System.out.println("You have successfully returned \"" + title + "\".");
+        } else
+            System.out.println("There is no book to be returned!");
+    }
+
+    public void displayDetails(){
+        System.out.println("\nTitle: " + title + "\nAuthor: " + author + "\nISBN: " + isbn + "\nCopies Available: " + currCopies + "\n");
+    }
+}
+
+
+class Library{
+
+    ArrayList<Book> books = new ArrayList<>();
+
+    public void addBook(Book book) {
+        books.add(book);
+    }
+
+    public void borrowBook(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title) && book.isAvailable()) {
+                book.borrowBook();
+                return;
+            }
+        }
+        System.out.println("No copies available.");
+    }
+
+    public void returnBook(String title) {
+        for(Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title)){
+                book.returnBook();
+                return;
+            }
+        }
+        System.out.println("Book not found.");
+    }
+
+    public void displayAvailableBooks() {
+        boolean found = false;
+        for(Book book : books) {
+            if(book.isAvailable()) {
+                book.displayDetails();
+                found = true;
+            }
+        }
+        if(!found) {
+            System.out.println("No books available.");
+        }
+    }
+}
+
