@@ -1,7 +1,7 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 
-public class LibraryMainFinal {
+public class LibraryMain {
     public static void main(String[] args) {
         
         Scanner scan = new Scanner(System.in);
@@ -12,92 +12,111 @@ public class LibraryMainFinal {
         Account currUser = null;
         acc.addAccount(acc); 
         String title, author, isbn, username, password;
-        boolean loop = true, userLoop = true;
+        boolean loop = true, userloop = true, outerloop = false;
         int numCopies;
 
-        while(userLoop) {
-            System.out.println("-----------WELCOME--------------");
-            System.out.print("[1] Register\n[2] Login\nSelect an option: ");
-            int userChoice = scan.nextInt();
-            scan.nextLine();
-            
-            switch(userChoice) {
-                case 1: 
-                    System.out.print("Username: ");
-                    username = scan.nextLine();
-                    System.out.print("Password: ");
-                    password= scan.nextLine();
-                    acc.addAccount(new Account(username, password));
-                    System.out.println("Account registered successfully!");
-                    break;
-                case 2:
-                    while(true) {
-                        System.out.print("Username: ");
-                        username = scan.nextLine();     
+        do{
+            outerloop = false;
+            while(userloop) {
+                boolean logloop = true;
+                System.out.println("\n-----------WELCOME--------------");
+                System.out.print("[1] Register\n[2] Login\nSelect an option: ");
+                int userChoice = scan.nextInt();
+                scan.nextLine();
+                
+                switch(userChoice) {
+                    case 1: 
+                        System.out.print("\nUsername: ");
+                        username = scan.nextLine();
                         System.out.print("Password: ");
-                        password = scan.nextLine();
-                        currUser = acc.checkUsernamePass(username, password);
-                        if(currUser != null) {
-                            System.out.println("Login successful!");
-                            break;
-                        } else {
-                            System.out.println("Invalid username or password. Try again.");
+                        password= scan.nextLine();
+                        acc.addAccount(new Account(username, password));
+                        System.out.println("Account registered successfully!");
+                        break;
+                    case 2:
+                        while(logloop) {
+                            System.out.print("\nUsername: ");
+                            username = scan.nextLine();     
+                            System.out.print("Password: ");
+                            password = scan.nextLine();
+                            currUser = acc.checkUsernamePass(username, password);
+                            if (currUser != null) {
+                                System.out.println("Login successful!");
+                                userloop = false; 
+                                logloop = false; 
+                                break;
+                            } else {
+                                System.out.println("Invalid username or password. Try again.");
+                                while (true) {
+                                    System.out.println("\n[1] Try Again\n[2] Back to Menu");
+                                    System.out.println("Select an option: ");
+                                    char logChoice = scan.next().charAt(0);
+                                    scan.nextLine(); 
+                                    if (logChoice == '2') {
+                                        logloop = false; 
+                                        break;
+                                    } else if (logChoice == '1') 
+                                        break;
+                                    else 
+                                        System.out.println("Invalid choice. Please select 1 or 2.");
+                                    
+                                }
+                            }
                         }
-                    }
-                    userLoop = false; // Exit user loop after successful login
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please select between 1 and 2.");
-                    break;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please select 1 or 2");
+                        break;
+                }
             }
-        }
 
-        while(loop) {
-            System.out.println("--------------LIBRARY MANAGEMENT SYSTEM---------------");
-            System.out.println("[1] Add a book\n[2] Borrow a book\n[3] Return a book\n[4] Display Available books\n[5] EXIT");
-            System.out.print("Select an option: ");
-            int choice = scan.nextInt();
-            scan.nextLine();
+            while(loop) {
+                System.out.println("\n--------------LIBRARY MANAGEMENT SYSTEM---------------");
+                System.out.println("[1] Add a book\n[2] Borrow a book\n[3] Return a book\n[4] Display Available books\n[5] Back to Menu");
+                System.out.print("Select an option: ");
+                int choice = scan.nextInt();
+                scan.nextLine();
 
-            switch(choice) {
-                case 1: 
-                    if (currUser.isAdmin()) {
-                        System.out.print("Enter Book Title: ");
+                switch(choice) {
+                    case 1: 
+                        if (currUser.isAdmin()) {
+                            System.out.print("Enter Book Title: ");
+                            title = scan.nextLine();
+                            System.out.print("Enter Book Author: ");
+                            author = scan.nextLine();
+                            System.out.print("Enter ISBN: ");
+                            isbn = scan.nextLine();
+                            System.out.print("Number of copies: ");
+                            numCopies = scan.nextInt();
+                            book = new Book(title, author, isbn, numCopies);
+                            lib.addBook(book);
+                        } else {
+                            System.out.println("\nOnly admins can add books.");
+                        }
+                        break;
+                    case 2: 
+                        System.out.print("Title of the book: ");
                         title = scan.nextLine();
-                        System.out.print("Enter Book Author: ");
-                        author = scan.nextLine();
-                        System.out.print("Enter ISBN: ");
-                        isbn = scan.nextLine();
-                        System.out.print("Number of copies: ");
-                        numCopies = scan.nextInt();
-                        book = new Book(title, author, isbn, numCopies);
-                        lib.addBook(book);
-                    } else {
-                        System.out.println("Only admins can add books.");
-                    }
-                    break;
-                case 2: 
-                    System.out.print("Title of the book: ");
-                    title = scan.nextLine();
-                    lib.borrowBook(title, currUser);
-                    break;
-                case 3: 
-                    System.out.print("Title of the book: ");
-                    title = scan.nextLine();
-                    lib.returnBook(title, currUser);
-                    break;
-                case 4: 
-                    lib.displayAvailableBooks();
-                    break;
-                case 5:
-                    loop = false;
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please select between 1 and 5.");
-                    break;
+                        lib.borrowBook(title, currUser);
+                        break;
+                    case 3: 
+                        System.out.print("Title of the book: ");
+                        title = scan.nextLine();
+                        lib.returnBook(title, currUser);
+                        break;
+                    case 4: 
+                        lib.displayAvailableBooks();
+                        break;
+                    case 5:
+                        loop = false;
+                        outerloop = true;
+                        break;
+                    default: 
+                        System.out.println("\nInvalid choice. Please select between 1 and 5.");
+                        break;
+                }
             }
-        }
-
+        }while(outerloop);
     }
 }
 
@@ -127,17 +146,17 @@ class Book {
     public void borrowBook() {
         if (isAvailable()) {
             currCopies--;
-            System.out.println("You have successfully borrowed \"" + title + "\".");
+            System.out.println("\nYou have successfully borrowed \"" + title + "\".");
         }else 
-            System.out.println("Sorry, no copies of \"" + title + "\" are available at the moment.");
+            System.out.println("\nSorry, no copies of \"" + title + "\" are available at the moment.");
     }
 
     public void returnBook() {
         if(currCopies < numCopies) {
             currCopies++;
-            System.out.println("You have successfully returned \"" + title + "\".");
+            System.out.println("\nYou have successfully returned \"" + title + "\".");
         } else
-            System.out.println("There is no book to be returned!");
+            System.out.println("\nThere is no book to be returned!");
     }
 
     public void displayDetails(){
@@ -152,29 +171,29 @@ class Library{
     
     public void addBook(Book book) {
         books.add(book);
-        System.out.println("Book added successfully.");
+        System.out.println("\nBook added successfully.");
     }
 
     public void borrowBook(String title, Account user) {
         for (Book book : books) {
             if (book.getTitle().equalsIgnoreCase(title) && book.isAvailable()) {
                 book.borrowBook();
-                user.borrowBook(book);  // Track the borrowed book in the user's account
+                user.borrowBook(book); 
                 return;
             }
         }
-        System.out.println("No copies available or book not found.");
+        System.out.println("\nNo copies available or book not found.");
     }
 
     public void returnBook(String title, Account user) {
         for(Book book : user.getBorrowedBooks()) {
             if (book.getTitle().equalsIgnoreCase(title)){
                 book.returnBook();
-                user.returnBook(book); // Remove the book from the user's borrowed list
+                user.returnBook(book); 
                 return;
             }
         }
-        System.out.println("Book not found in your borrowed list.");
+        System.out.println("\nBook not found in your borrowed list.");
     }
 
     public void displayAvailableBooks() {
@@ -186,7 +205,7 @@ class Library{
             }
         }
         if(!found) {
-            System.out.println("No books available.");
+            System.out.println("\nNo books available.");
         }
     }
 }
