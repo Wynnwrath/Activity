@@ -1,0 +1,242 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+
+public class LibraryMainFinal {
+    public static void main(String[] args) {
+        
+        Scanner scan = new Scanner(System.in);
+        
+        Account acc = new Account("admin", "123"); 
+        Library lib = new Library();
+        Book book;
+        Account currUser = null;
+        acc.addAccount(acc); 
+        String title, author, isbn, username, password;
+        boolean loop = true, userLoop = true;
+        int numCopies;
+
+        while(userLoop) {
+            System.out.println("-----------WELCOME--------------");
+            System.out.print("[1] Register\n[2] Login\nSelect an option: ");
+            int userChoice = scan.nextInt();
+            scan.nextLine();
+            
+            switch(userChoice) {
+                case 1: 
+                    System.out.print("Username: ");
+                    username = scan.nextLine();
+                    System.out.print("Password: ");
+                    password= scan.nextLine();
+                    acc.addAccount(new Account(username, password));
+                    System.out.println("Account registered successfully!");
+                    break;
+                case 2:
+                    while(true) {
+                        System.out.print("Username: ");
+                        username = scan.nextLine();     
+                        System.out.print("Password: ");
+                        password = scan.nextLine();
+                        currUser = acc.checkUsernamePass(username, password);
+                        if(currUser != null) {
+                            System.out.println("Login successful!");
+                            break;
+                        } else {
+                            System.out.println("Invalid username or password. Try again.");
+                        }
+                    }
+                    userLoop = false; // Exit user loop after successful login
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please select between 1 and 2.");
+                    break;
+            }
+        }
+
+        while(loop) {
+            System.out.println("--------------LIBRARY MANAGEMENT SYSTEM---------------");
+            System.out.println("[1] Add a book\n[2] Borrow a book\n[3] Return a book\n[4] Display Available books\n[5] EXIT");
+            System.out.print("Select an option: ");
+            int choice = scan.nextInt();
+            scan.nextLine();
+
+            switch(choice) {
+                case 1: 
+                    if (currUser.isAdmin()) {
+                        System.out.print("Enter Book Title: ");
+                        title = scan.nextLine();
+                        System.out.print("Enter Book Author: ");
+                        author = scan.nextLine();
+                        System.out.print("Enter ISBN: ");
+                        isbn = scan.nextLine();
+                        System.out.print("Number of copies: ");
+                        numCopies = scan.nextInt();
+                        book = new Book(title, author, isbn, numCopies);
+                        lib.addBook(book);
+                    } else {
+                        System.out.println("Only admins can add books.");
+                    }
+                    break;
+                case 2: 
+                    System.out.print("Title of the book: ");
+                    title = scan.nextLine();
+                    lib.borrowBook(title, currUser);
+                    break;
+                case 3: 
+                    System.out.print("Title of the book: ");
+                    title = scan.nextLine();
+                    lib.returnBook(title, currUser);
+                    break;
+                case 4: 
+                    lib.displayAvailableBooks();
+                    break;
+                case 5:
+                    loop = false;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please select between 1 and 5.");
+                    break;
+            }
+        }
+
+    }
+}
+
+class Book {
+
+    private final String title, author, isbn;
+    private int numCopies, currCopies;
+    
+
+    public Book(String title, String author, String isbn, int numCopies) {
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        this.numCopies = numCopies;
+        this.currCopies = numCopies;
+    }
+
+    
+    public boolean isAvailable() {
+        return currCopies > 0;
+    }
+
+    public String getTitle(){
+        return title;
+    }
+
+    public void borrowBook() {
+        if (isAvailable()) {
+            currCopies--;
+            System.out.println("You have successfully borrowed \"" + title + "\".");
+        }else 
+            System.out.println("Sorry, no copies of \"" + title + "\" are available at the moment.");
+    }
+
+    public void returnBook() {
+        if(currCopies < numCopies) {
+            currCopies++;
+            System.out.println("You have successfully returned \"" + title + "\".");
+        } else
+            System.out.println("There is no book to be returned!");
+    }
+
+    public void displayDetails(){
+        System.out.println("\nTitle: " + title + "\nAuthor: " + author + "\nISBN: " + isbn + "\nCopies Available: " + currCopies + "\n");
+    }
+}
+
+
+class Library{
+
+    ArrayList<Book> books = new ArrayList<>();
+    
+    public void addBook(Book book) {
+        books.add(book);
+        System.out.println("Book added successfully.");
+    }
+
+    public void borrowBook(String title, Account user) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title) && book.isAvailable()) {
+                book.borrowBook();
+                user.borrowBook(book);  // Track the borrowed book in the user's account
+                return;
+            }
+        }
+        System.out.println("No copies available or book not found.");
+    }
+
+    public void returnBook(String title, Account user) {
+        for(Book book : user.getBorrowedBooks()) {
+            if (book.getTitle().equalsIgnoreCase(title)){
+                book.returnBook();
+                user.returnBook(book); // Remove the book from the user's borrowed list
+                return;
+            }
+        }
+        System.out.println("Book not found in your borrowed list.");
+    }
+
+    public void displayAvailableBooks() {
+        boolean found = false;
+        for(Book book : books) {
+            if(book.isAvailable()) {
+                book.displayDetails();
+                found = true;
+            }
+        }
+        if(!found) {
+            System.out.println("No books available.");
+        }
+    }
+}
+
+class Account {
+
+    private String username, password;
+    private ArrayList<Book> borrowedBooks = new ArrayList<>();
+
+    public Account(String username, String password){
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void borrowBook(Book book) {
+        borrowedBooks.add(book);
+    }
+
+    public void returnBook(Book book) {
+        borrowedBooks.remove(book);
+    }
+
+    public ArrayList<Book> getBorrowedBooks() {
+        return borrowedBooks;
+    }
+
+    public boolean isAdmin() {
+        return username.equalsIgnoreCase("admin") && password.equals("123");
+    }
+
+    private static ArrayList<Account> accounts = new ArrayList<>();
+
+    public static void addAccount(Account acc) {
+        accounts.add(acc);
+    }
+
+    public static Account checkUsernamePass(String username, String password) {
+        for(Account i : accounts) {
+            if(i.getUsername().equalsIgnoreCase(username) && i.getPassword().equalsIgnoreCase(password)) {
+                return i;
+            }
+        }
+        return null;
+    }
+}
