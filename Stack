@@ -1,0 +1,42 @@
+// Online Java Compiler
+// Use this editor to write, compile and run your Java code online
+
+class HelloWorld {
+    public static void main(String[] args) {
+        
+        HelloWorld hel = HelloWorld()''
+        
+        push(1);
+        
+        for(int i : hel.stack) {
+            System.out.println(i)
+        }
+        
+        
+    }
+    
+    static int[] stack = new int[5];
+    static int top = -1;
+    static void push(int num) {
+        if(stack >= 4) {
+            return;
+        }
+        stack[top] = num;
+        top++;
+    }
+    static int pop() {
+        if(stack == -1) {
+            return;
+        }
+    }
+    static void peek() {
+        System.out.println(stack[top]);
+    }
+    static void isEmpty() {
+        
+    }
+    
+    static void isFull() {
+        
+    }
+}
