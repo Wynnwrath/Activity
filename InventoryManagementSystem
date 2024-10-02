@@ -21,7 +21,22 @@ public class Product {
     } 
     
     public void removeStock(int amount) {
+        if(amount > quantity) {
+            throw new InsufficientStockException("Current stock: " + quantity + ". Cannot remove more than available stock.");
+        }
         quantity -= amount;
+    }
+
+    public void exceedingStock(int amount){
+        if(amount > 100) {
+            throw new InsufficientStockException("Current quantity: " + quantity +". Quantity must not exceed 100");
+        }
+    }
+
+    public void insufficientStock(int remainingStock){
+        if(remainingStock < 0) {
+            throw new InsufficientStockException("Current stock: " + quantity + ". Cannot remove more than available stock.");
+        }
     }
     
     public void setProductName(String productName) {
@@ -56,9 +71,23 @@ public class Product {
     
     public static void main(String[] args) {
             
-        Product prod = new Product("341252", "Seth", 50, 150);
+        Product prod = new Product("01", "Seth", 50, 150);
+        Product prod2 = new Product("02", "Pinca", 20, 75);
+        Inventory inv = new Inventory();
+        try {
+        prod.updateStock(30);
         prod.removeStock(60);
+        prod.removeStock(20);
+        inv.removeProduct("02");
+        inv.displayInventory();
         System.out.println(prod.getQuantity());
+        }
+        catch(InsufficientStockException e) {
+            System.out.println(e.getMessage());
+        }
+        catch(InvalidQuantityException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
 
@@ -72,21 +101,17 @@ class PerishableProduct extends Product{
     }
     
     public void updateStock(int amount){
-        int temp = super.getQuantity() + amount;
-        
-        if(temp > 100)
-            throw new InsufficientStockException("Stocks exceeds the limit");
-        else
-            super.updateStock(amount);
+        int newTotal = super.getQuantity() + amount;
+
+        exceedingStock(newTotal);
+        super.updateStock(amount);
     } 
     
     public void removeStock(int amount) {
-        int temp = super.getQuantity() - amount;
+        int tempTotal = super.getQuantity() - amount;
         
-        if(temp < 0) 
-            throw new InsufficientStockException("Insufficient stocks");
-        else
-            super.removeStock(amount);
+        insufficientStock(tempTotal);
+        super.removeStock(amount);
     }
     
 }
@@ -130,6 +155,12 @@ class Inventory extends InventoryOperation {
             }
         }
     }
+
+    public void displayInventory() {
+        for(Product i : inventory) {
+            System.out.println();
+        }
+    }
 }
 
 class InsufficientStockException extends RuntimeException {
@@ -145,4 +176,3 @@ class InvalidQuantityException extends RuntimeException {
         super(msg);
     }
 }
-
