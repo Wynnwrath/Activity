@@ -12,29 +12,28 @@ public class Product {
         this.price = price;
     }
     
-    public Product() {
-        
-    }
+    public Product() {}
     
     public void updateStock(int amount) {
         quantity += amount;
+        System.out.println("Product new quantity: " + quantity);
     } 
     
     public void removeStock(int amount) {
-        if(amount > quantity) {
+        if (amount > quantity) {
             throw new InsufficientStockException("Current stock: " + quantity + ". Cannot remove more than available stock.");
         }
         quantity -= amount;
     }
 
-    public void exceedingStock(int amount){
-        if(amount > 100) {
-            throw new InsufficientStockException("Current quantity: " + quantity +". Quantity must not exceed 100");
+    public void exceedingStock(int amount) {
+        if (amount > 100) {
+            throw new InsufficientStockException("Current quantity: " + quantity + ". Quantity must not exceed 100.");
         }
     }
 
-    public void insufficientStock(int remainingStock){
-        if(remainingStock < 0) {
+    public void insufficientStock(int remainingStock) {
+        if (remainingStock < 0) {
             throw new InsufficientStockException("Current stock: " + quantity + ". Cannot remove more than available stock.");
         }
     }
@@ -42,11 +41,13 @@ public class Product {
     public void setProductName(String productName) {
         this.productName = productName;
     }
+    
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-    public void setPrice(int price) {
-        this.price =  price;
+    
+    public void setPrice(double price) {
+        this.price = price;
     }
         
     public void setProductId(String productId) {
@@ -65,62 +66,58 @@ public class Product {
         return quantity;
     }
     
-    public double getPrice(){
+    public double getPrice() {
         return price;
     }
     
     public static void main(String[] args) {
-            
-        Product prod = new Product("01", "Seth", 50, 150);
-        Product prod2 = new Product("02", "Pinca", 20, 75);
         Inventory inv = new Inventory();
+        PerishableProduct prod = new PerishableProduct("P001", "Apple", 50, 0.5, "2024-12-31");
+        NonPerishableProduct prod2 = new NonPerishableProduct("P002", "Rice", 200, 1.0, 100);
+        inv.addProduct(prod);
+        inv.addProduct(prod2);
+
         try {
-        prod.updateStock(30);
-        prod.removeStock(60);
-        prod.removeStock(20);
-        inv.removeProduct("02");
-        inv.displayInventory();
-        System.out.println(prod.getQuantity());
-        }
-        catch(InsufficientStockException e) {
+            prod.updateStock(30);
+            inv.removeProduct("P001");
+            inv.displayInventory(); // Call this after removing a product
+            prod.removeStock(160); // This will throw an exception
+            prod.updateStock(-10); // This will also throw an exception
+        } catch (InsufficientStockException e) {
+            System.out.println(e.getMessage());
+        } catch (InvalidQuantityException e) {
             System.out.println(e.getMessage());
         }
-        catch(InvalidQuantityException e) {
-            System.out.println(e.getMessage());
-        }
+        
+        inv.displayInventory(); // Call to display inventory after all operations
     }
 }
 
-class PerishableProduct extends Product{
-    
+class PerishableProduct extends Product {
     private String expirationDate;
     
-    public PerishableProduct (String productId, String productName, int quantity, double price, String expirationDate) {
+    public PerishableProduct(String productId, String productName, int quantity, double price, String expirationDate) {
         super(productId, productName, quantity, price);
         this.expirationDate = expirationDate;
     }
     
-    public void updateStock(int amount){
+    public void updateStock(int amount) {
         int newTotal = super.getQuantity() + amount;
-
         exceedingStock(newTotal);
         super.updateStock(amount);
     } 
     
     public void removeStock(int amount) {
         int tempTotal = super.getQuantity() - amount;
-        
         insufficientStock(tempTotal);
         super.removeStock(amount);
     }
-    
 }
 
 class NonPerishableProduct extends Product {
+    private int shelfLife;
     
-    private String shelfLife;
-    
-    public NonPerishableProduct (String productId, String productName, int quantity, double price, String shelfLife) {
+    public NonPerishableProduct(String productId, String productName, int quantity, double price, int shelfLife) {
         super(productId, productName, quantity, price);
         this.shelfLife = shelfLife;
     }
@@ -134,44 +131,44 @@ class NonPerishableProduct extends Product {
     }
 }
 
-abstract class InventoryOperation {
+class Inventory {
+    private ArrayList<Product> inventory = new ArrayList<>();
     
-    public abstract void addProduct(Product product);
-    public abstract void removeProduct(String productId);
-}
-
-class Inventory extends InventoryOperation {
-    
-    ArrayList<Product> inventory = new ArrayList<>();
-    
-    public void addProduct(Product product){
+    public void addProduct(Product product) {
+        System.out.println("Product added: " + product.getProductName() + " with quantity: " + product.getQuantity());
         inventory.add(product); 
     }
     
     public void removeProduct(String productId) {
-        for(Product i : inventory) {
-            if(i.getProductId().equals(productId)) {
+        for (int i = 0; i < inventory.size(); i++) {
+            if (inventory.get(i).getProductId().equals(productId)) {
+                System.out.println("Successfully removed " + inventory.get(i).getProductId());
                 inventory.remove(i);
+                return;  
             }
         }
+        System.out.println("Product not found: " + productId);
     }
-
+    
     public void displayInventory() {
-        for(Product i : inventory) {
-            System.out.println();
+        if (inventory.isEmpty()) {
+            System.out.println("Inventory is empty.");
+        } else {
+            for (Product p : inventory) {
+                System.out.println("Product ID: " + p.getProductId() + ", Name: " + p.getProductName() +
+                        ", Quantity: " + p.getQuantity() + ", Price: $" + p.getPrice());
+            }
         }
     }
 }
 
 class InsufficientStockException extends RuntimeException {
-    
     public InsufficientStockException(String msg) {
         super(msg);
     }
 }
 
 class InvalidQuantityException extends RuntimeException {
-    
     public InvalidQuantityException(String msg) {
         super(msg);
     }
