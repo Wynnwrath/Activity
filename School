@@ -1,0 +1,143 @@
+import java.util.*;
+
+public class Main {
+   public static void main(String[] args) {
+      School school = new School();
+      school.addStudent(new Student("Alice", 20, "S001", 1.5));
+      school.addStudent(new Student("Bob", 21, "S002", 1.8));
+      school.addTeacher(new Teacher("Mr. Smith", 40, "T001", "Math"));
+      school.addTeacher(new Teacher("Ms. Johnson", 35, "T002", "History"));   
+   
+   try{
+      // Case 1
+      school.displayStudents();
+
+      // Case 2
+      school.addTeacher(new Teacher("Quibs", 21, "T003", "2.0"));
+      school.displayStudents();
+
+      // Case 3
+      school.searchStudent("S001");
+      
+      //Case 4
+      school.searchStudent("S003");
+      
+      // Case 5
+      school.displayTeachers();
+      
+      // Case 6
+      school.addTeacher(new Teacher("Mr. Brown", 50, "T003", "Physics"));
+      
+      // Case 7
+      school.searchTeacher("T001");
+      
+      //Case 8
+      school.searchTeacher("T004");
+      }catch(StudentNotFoundException e){
+         System.out.println(e.getMessage());
+      }
+}
+     
+   
+}
+
+abstract class Person {
+   String name;
+   int age;
+
+   public Person(String name, int age) {
+      this.name = name;
+      this.age = age;
+   }
+
+   abstract String getDetails();
+}
+
+class Student extends Person {
+   String studentId;
+   double grade;
+   
+   public Student(String name, int age, String studentId, double grade) {
+      super(name, age);
+      this.studentId = studentId;
+      this.grade = grade;
+   }
+
+   String getDetails() {
+      return name + " " + age + " " + studentId + " " + grade;
+   }
+
+   String getStudentId() {
+      return studentId;   
+   }
+}
+
+class Teacher extends Person {
+   String teacherId;
+   String subject;
+
+   public Teacher(String name, int age, String teacherId, String subject) {
+      super(name, age);
+      this.teacherId = teacherId;
+      this.subject = subject;   
+   }
+
+   String getDetails() {
+      return name + " " + age + " " + teacherId + " " + subject;
+   }
+
+   String getTeacherId() {
+      return teacherId;
+   }
+}
+
+class School {
+   ArrayList<Student> students = new ArrayList<>();
+   ArrayList<Teacher> teachers = new ArrayList<>();
+   
+   public void addStudent(Student student) {
+      students.add(student);
+   }
+   
+   public void addTeacher(Teacher teacher) {
+      teachers.add(teacher);
+   }
+   
+   public void displayStudents() {
+      for (Student student : students) {
+         System.out.println(student.getDetails());
+      }
+   }
+   
+   public void displayTeachers() {
+      for (Teacher teacher : teachers) {
+         System.out.println(teacher.getDetails());
+      }
+   }
+   
+   public void searchStudent(String studentId) {
+      for (Student student : students) {
+         if (studentId.equalsIgnoreCase(student.getStudentId())) {
+            System.out.println(student.getDetails());
+            return;
+         }
+      }    
+      throw new StudentNotFoundException("Student not found");
+   }
+   
+   public void searchTeacher(String teacherId) {
+      for (Teacher teacher : teachers) {
+         if (teacherId.equalsIgnoreCase(teacher.getTeacherId())) {
+            System.out.println(teacher.getDetails());
+            return;
+         }
+      }
+      throw new StudentNotFoundException("Teacher not found");
+   }
+}
+
+class StudentNotFoundException extends RuntimeException { 
+   public StudentNotFoundException(String msg) {
+      super(msg);
+   }
+}
