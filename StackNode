@@ -1,0 +1,65 @@
+public class StackNode {
+    public static void main(String[] args) {
+        Tail node = new Tail();
+        node.push(23);
+        node.push(10);
+        node.push(3);
+        node.push(2);
+        System.out.println(node.peek());
+        node.display();
+        System.out.println("Popped: " + node.pop());
+        node.display();
+    }
+}
+
+class Node {
+    Node next;
+    int value;
+
+    public Node(int value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class Tail {
+    Node tail;
+    
+    public Tail() {
+        tail = null;
+    }
+
+    public void push(int val) {
+        Node stack = new Node(val);
+        stack.next = tail;
+        tail = stack;
+    }
+
+    public int pop() {
+        if (isEmpty()) {
+            throw new RuntimeException("Stack is empty");
+        }
+        int temp = tail.value;
+        tail = tail.next;
+        return temp;
+    }
+
+    public int peek() {
+        if (isEmpty()) {
+            throw new RuntimeException("Stack is empty");
+        }
+        return tail.value;
+    }
+
+    public boolean isEmpty() {
+        return tail == null;
+    }
+
+    public void display() {
+        Node current = tail;
+        while (current != null) {
+            System.out.println(current.value);
+            current = current.next;
+        }
+    }
+}
