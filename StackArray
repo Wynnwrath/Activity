@@ -1,0 +1,64 @@
+public class StackArray {
+    public static void main(String[] args) {
+        
+        Stack stack = new Stack(5);
+
+        stack.push("1");
+        stack.push("2");
+        stack.push("3");
+        stack.push("4");
+        stack.push("5");
+        stack.pop();
+        stack.display();
+        System.out.println(stack.peek());
+    }   
+}
+
+class Stack {
+    String[] arr;
+    int count;
+    public Stack(int size) {
+        arr = new String[size];
+        count = 0;
+    }
+
+    public boolean push(String val) {
+        if(!isFull()) {
+            arr[count++] = val;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean pop() {
+        if(!isEmpty()) {
+            arr[count - 1] = null;
+            count--;
+            return true;
+        }
+        return false;
+    }
+
+    public String peek() {
+        return arr[count-1];
+    }
+    public boolean isEmpty() {
+        if(count == 0){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isFull() {
+        if(count == arr.length) {
+            return true;
+        }
+        return false;
+    }
+    
+    public void display() {
+        for(int i = count - 1; i >= 0 ; i--) {
+            System.out.println(arr[i]);
+        }
+    }
+}
