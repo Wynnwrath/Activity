@@ -35,13 +35,12 @@ class Tail {
         tail = stack;
     }
 
-    public int pop() {
-        if (isEmpty()) {
-            throw new RuntimeException("Stack is empty");
+    public boolean pop() {
+        if (!isEmpty()) {
+            tail = tail.next;
+            return true;
         }
-        int temp = tail.value;
-        tail = tail.next;
-        return temp;
+        return false;
     }
 
     public int peek() {
