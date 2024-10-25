@@ -1,0 +1,104 @@
+import java.util.*;
+
+public class InfixtoPostfix {
+    private String infix;
+
+    public InfixtoPostfix(String i ) {
+        infix = i;
+    }
+
+    private int getPrec(char o ) {
+        if(o == '*' || o == '/')
+            return 2;
+        if(o == '+' || o == '-')
+            return 1;
+        return -1;
+    }
+    public String convert() {
+        Tail s = new Tail();
+        String result = "";
+
+        for(int i = 0; i < infix.length(); i++) {
+            char c = infix.charAt(i);
+
+            if(Character.isDigit(c)) {
+                result += c;
+            }
+            else if( c =='(') {
+                s.push(c + "");
+            }
+            else if (c == ')') {
+                while(!s.peek().equals("(")) {
+                    result += s.pop();
+                }
+                s.pop();
+            }
+            else {
+                while(!s.isEmpty() && ((getPrec(c) < getPrec(s.peek().charAt(0)))) ||  (getPrec(c) ==  getPrec(s.peek().charAt(0)))) {
+                    result+=s.pop();
+                }
+                s.push(c+"");
+            }
+        }
+        while(!s.isEmpty()) {
+            result+=s.pop();
+        }
+        return result;
+    }
+    public static void main(String[] args) {
+        InfixtoPostfix infix = new InfixtoPostfix("(2*4)*(6+1)");
+        System.out.println(infix.convert());
+    }
+}
+
+class Node {
+    Node next;
+    String value;
+
+    public Node(String value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class Tail {
+    Node tail;
+    
+    public Tail() {
+        tail = null;
+    }
+
+    public void push(String val) {
+        Node stack = new Node(val);
+        stack.next = tail;
+        tail = stack;
+    }
+
+    public String pop() {
+        if (isEmpty()) {
+            throw new RuntimeException("Stack is empty");
+        }
+        String temp = tail.value;
+        tail = tail.next;
+        return temp;
+    }
+
+    public String peek() {
+        if (isEmpty()) {
+            throw new RuntimeException("Stack is empty");
+        }
+        return tail.value;
+    }
+
+    public boolean isEmpty() {
+        return tail == null;
+    }
+
+    public void display() {
+        Node current = tail;
+        while (current != null) {
+            System.out.println(current.value);
+            current = current.next;
+        }
+    }
+}
