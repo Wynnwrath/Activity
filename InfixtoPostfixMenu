@@ -1,0 +1,46 @@
+import java.util.*;
+
+public class InfixtoPostfixMenu 
+{
+    public static void main(String[] args) 
+    {
+        boolean loop = true;
+        InfixtoPostfix ip = null;
+        String expression = "";
+        Scanner scan = new Scanner(System.in);
+        
+        System.out.println("------------PostFix Program--------------");
+        
+            while(loop) {
+            
+            System.out.println("\nMenu: ");
+            System.out.println("[1] Convert to Postfix");
+            System.out.println("[2] Evaluate to Postfix");
+            System.out.println("[3] Exit Program");
+            System.out.print("Select an option: ");
+            char choice = scan.next().charAt(0);
+            scan.nextLine();
+                
+            switch (choice) {
+                case '1': 
+                    System.out.println("\nEnter expression: ");
+                    expression = scan.nextLine();
+                    break;
+                case '2':
+                    if (!expression.isEmpty()) {
+                        ip = new InfixtoPostfix(expression);
+                        System.out.println("\nInfix Expression: " + expression + "\nPostfix Expression: " + ip.convert());
+                    } else {
+                        System.out.println("\nNo expression to evaluate. Please convert to postfix first.");
+                    }                    break;
+                case '3':
+                    loop = false;
+                    break;
+                default:
+                    System.out.println("\nSelect an available option!");
+                    break;
+            }
+        }
+        System.out.println("\nExiting Program...");
+    }
+}
