@@ -34,7 +34,7 @@ public class InfixtoPostfix {
                 s.pop();
             }
             else {
-                while(!s.isEmpty() && ((getPrec(c) < getPrec(s.peek().charAt(0)))) ||  (getPrec(c) ==  getPrec(s.peek().charAt(0)))) {
+                while(!s.isEmpty() && ((getPrec(c) <= getPrec(s.peek().charAt(0))))) {
                     result+=s.pop();
                 }
                 s.push(c+"");
@@ -75,19 +75,19 @@ class Tail {
     }
 
     public String pop() {
-        if (isEmpty()) {
-            throw new RuntimeException("Stack is empty");
+        if (!isEmpty()) {
+            String temp = tail.value;
+            tail = tail.next;
+            return temp;
         }
-        String temp = tail.value;
-        tail = tail.next;
-        return temp;
+    return null;
     }
 
     public String peek() {
-        if (isEmpty()) {
-            throw new RuntimeException("Stack is empty");
+        if (!isEmpty()) {
+            return tail.value;
         }
-        return tail.value;
+        return null;
     }
 
     public boolean isEmpty() {
