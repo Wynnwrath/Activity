@@ -1,0 +1,57 @@
+import java.util.*;
+public class QueueMenu {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("-------------QUEUE--------------");
+        System.out.print("Enter size: ");
+        int size = scan.nextInt();
+        scan.nextLine();
+        QueueArray qa = new QueueArray(size);
+
+        boolean loop = true;
+        do {
+            System.out.println("\n---------Queue Array Menu---------");
+            System.out.println("1.) Enqueue an Item\n2.) Dequeue\n3.) Get Front\n4.) Display Queue\nx.) Exit Program");
+            System.out.print("Select an option: ");
+            char choice = scan.next().charAt(0);
+            scan.nextLine();
+
+            switch(choice) {
+                case '1':
+                    System.out.println("\nEnter a string: ");
+                    String val = scan.nextLine();
+                    if(qa.enqueue(val)){
+                        System.out.println("\nEnqueued successfully!");
+                    } else {
+                        System.out.println("\nSorry. Queue is full.");
+                    }
+                    break;
+                case '2':
+                    if(qa.dequeue()) {
+                        System.out.println("\nDequeued successfully!");
+                    } else {
+                        System.out.println("\nSorry, Queue is empty.");
+                    }
+                    break;
+                case '3':
+                    if(qa.front() == null) {
+                        System.out.println("\nSorry. Queue is Empty");
+                    } else {
+                        System.out.println("Front: \n["+qa.front()+"]");
+                    }
+                    break;
+                case '4':
+                    qa.display();
+                    break;
+                case 'x':
+                case 'X':
+                    loop = false;
+                    System.out.println("\nExiting Program...");
+                    break;
+                default:
+                    System.out.println("\nOption is not valid. Try again.");
+                    break;
+            }
+        } while(loop);
+    }
+}
