@@ -1,0 +1,204 @@
+import java.util.*;
+
+class InfixtoPostfix {
+    private String infix;
+
+    public InfixtoPostfix(String i ) {
+        infix = i;
+    }
+    
+    public InfixtoPostfix(){
+    }
+
+    private int getPrec(char o ) {
+        if(o == '*' || o == '/')
+            return 2;
+        if(o == '+' || o == '-')
+            return 1;
+        return -1;
+    }
+    public String convert() {
+        Stack s = new Stack();
+        String result = "";
+
+        for(int i = 0; i < infix.length(); i++) {
+            char c = infix.charAt(i);
+
+            if(Character.isDigit(c)) {
+                result += c;
+            }
+            else if( c =='(') {
+                s.push(c + "");
+            }
+            else if (c == ')') {
+                while(!s.peek().equals("(")) {
+                    result += s.pop();
+                }
+                s.pop();
+            }
+            else {
+                while(!s.isEmpty() && ((getPrec(c) <= getPrec(s.peek().charAt(0))))) {
+                    result+=s.pop();
+                }
+                s.push(c+"");
+            }
+        }
+        while(!s.isEmpty()) {
+            result+=s.pop();
+        }
+        return result;
+    }
+    public static void main(String[] args) {
+        InfixtoPostfix infix = new InfixtoPostfix("(2*4)*(6+1)");
+        System.out.println(infix.convert());
+    }
+}
+
+class Node {
+    Node next;
+    String value;
+
+    public Node(String value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class Stack {
+    Node tail;
+    
+    public Stack() {
+        tail = null;
+    }
+
+    public void push(String val) {
+        Node stack = new Node(val);
+        stack.next = tail;
+        tail = stack;
+    }
+
+    public String pop() {
+        if (!isEmpty()) {
+            String temp = tail.value;
+            tail = tail.next;
+            return temp;
+        }
+    return null;
+    }
+
+    public String peek() {
+        if (!isEmpty()) {
+            return tail.value;
+        }
+        return null;
+    }
+
+    public boolean isEmpty() {
+        return tail == null;
+    }
+
+    public void display() {
+        Node current = tail;
+        while (current != null) {
+            System.out.println(current.value);
+            current = current.next;
+        }
+    }
+}
+
+class Evaluate {
+    public double evaluate(String str) {
+        Stack s = new Stack();
+        double ans = 0;
+        
+        for (int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);
+            
+            if (Character.isDigit(ch)) {
+                s.push(ch + "");
+            } else {
+                double val2 = Double.parseDouble(s.pop());
+                double val1 = Double.parseDouble(s.pop());
+                
+                double result = performOperation(ch, val1, val2);
+                s.push(result + "");
+            }
+        }
+        return Double.parseDouble(s.pop());
+    }
+    
+    public static double performOperation(char c, double val1, double val2) {
+        double ans = 0;
+        
+        switch (c) {
+            case '*':
+                ans = val1 * val2;
+                break;
+            case '/':
+                ans = val1 / val2;
+                break;
+            case '+':
+                ans = val1 + val2;
+                break;
+            case '-':
+                ans = val1 - val2;
+                break;
+        }
+        return ans;
+    }
+}
+public class InfixtoPostfixMenu 
+{
+    public static void main(String[] args) 
+    {
+        boolean loop = true;
+        double ans;
+        InfixtoPostfix ip = new InfixtoPostfix();
+        String infix = "", postfix = "";
+        Scanner scan = new Scanner(System.in);
+        
+        System.out.println("------------PostFix Program--------------");
+        
+            while(loop) {
+            
+            System.out.println("\nMenu: ");
+            System.out.println("[1] Convert to Postfix");
+            System.out.println("[2] Evaluate to Postfix");
+            System.out.println("[3] Exit Program");
+            System.out.print("Select an option: ");
+            char choice = scan.next().charAt(0);
+            scan.nextLine();
+                
+            switch (choice) {
+                case '1': 
+                    System.out.println("\nEnter infix: ");
+                    infix = scan.nextLine();
+                    ip = new InfixtoPostfix(infix);
+                    postfix = ip.convert();
+                    if (!infix.isEmpty()) {
+                        ip = new InfixtoPostfix(infix);
+                        System.out.println("\nInfix Expression: " + infix + "\nPostfix Expression: " + postfix);
+                    } else {
+                        System.out.println("\nNo infix to evaluate. Please convert to postfix first.");
+                    } 
+                    break;
+                case '2':
+                    if(!postfix.isEmpty()){
+                    Evaluate e = new Evaluate();
+                    ans = e.evaluate(postfix);
+                    System.out.println("\nResult after evaluation: " + ans);
+                    }
+                    break;
+                case '3':
+                    loop = false;
+                    break;
+                default:
+                    System.out.println("\nSelect an available option!");
+                    break;
+            }
+        }
+        System.out.println("\nExiting Program...");
+    }
+}
+
+    
