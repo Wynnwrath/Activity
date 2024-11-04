@@ -1,0 +1,180 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class ContactManagementSystem {
+    public static void main(String[] args) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (true) {
+                System.out.println("Contact Management System");
+                System.out.println("1. Add Contact");
+                System.out.println("2. View Contacts");
+                System.out.println("3. Update Contact");
+                System.out.println("4. Delete Contact");
+                System.out.println("5. Exit");
+                System.out.print("Choose an option: ");
+                int choice;
+
+                try {
+                    choice = scanner.nextInt();
+                    scanner.nextLine();
+                } catch (Exception e) {
+                    scanner.nextLine(); // Clear the invalid input
+                    System.out.println("Invalid choice. Please enter a number between 1 and 5.");
+                    continue; // Restart the loop
+                }
+
+                switch (choice) {
+                    case 1:
+                        addContact(scanner);
+                        break;
+                    case 2:
+                        viewContacts();
+                        break;
+                    case 3:
+                        updateContact(scanner);
+                        break;
+                    case 4:
+                        deleteContact(scanner);
+                        break;
+                    case 5:
+                        System.out.println("Exiting...");
+                        return;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+        }
+    }
+
+    public static void addContact(Scanner scanner) {
+        System.out.print("Enter contact name: ");
+        String contactName = scanner.nextLine();
+
+        File file = new File(FILE_NAME);
+
+        try (FileWriter writer = new FileWriter(file, true)) {
+            writer.write(contactName + "\n");
+            System.out.println("Contact added.");
+        } catch (IOException e) {
+            System.out.println("An error occurred while adding the contact: " + e.getMessage());
+        }
+    }
+
+    private static void viewContacts() {
+        File file = new File(FILE_NAME);
+
+        try (Scanner fileScanner = new Scanner(file)) {
+            if (!fileScanner.hasNextLine()) {
+                System.out.println("No contacts found.");
+                return;
+            }
+            System.out.println(FILE_NAME + " contents: ");
+            while (fileScanner.hasNextLine()) {
+                System.out.println(fileScanner.nextLine());
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File hasn't been created: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+        }
+    }
+
+    private static void updateContact(Scanner scanner) {
+        File file = new File(FILE_NAME);
+        
+        if (!file.exists() || file.length() == 0) {
+            System.out.println("No contacts found.");
+            return;
+        }
+
+        System.out.print("Enter name to update: ");
+        String oldName = scanner.nextLine();
+        System.out.print("Enter new name: ");
+        String newName = scanner.nextLine();
+        ArrayList<String> newContacts = new ArrayList<>();
+        boolean found = false;
+
+        try (Scanner fileScanner = new Scanner(file)) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                if (line.equalsIgnoreCase(oldName)) {
+                    newContacts.add(newName);
+                    found = true;
+                } else {
+                    newContacts.add(line);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + e.getMessage());
+            return;
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+            return;
+        }
+
+        if (!found) {
+            System.out.println("Contact not found.");
+            return;
+        }
+
+        try (FileWriter writer = new FileWriter(file)) {
+            for (String contact : newContacts) {
+                writer.write(contact + "\n");
+            }
+            System.out.println("Contact updated.");
+        } catch (IOException e) {
+            System.out.println("An error occurred while updating the contact: " + e.getMessage());
+        }
+    }
+
+    private static void deleteContact(Scanner scanner) {
+        File file = new File(FILE_NAME);
+
+        if (!file.exists() || file.length() == 0) {
+            System.out.println("No contacts found.");
+            return;
+        }
+
+        System.out.print("Enter name to be deleted: ");
+        String name = scanner.nextLine();
+        ArrayList<String> newContacts = new ArrayList<>();
+        boolean found = false;
+
+        try (Scanner fileScanner = new Scanner(file)) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                if (line.equalsIgnoreCase(name)) {
+                    found = true;
+                } else {
+                    newContacts.add(line);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + e.getMessage());
+            return;
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+            return;
+        }
+
+        if (!found) {
+            System.out.println("Contact not found.");
+            return;
+        }
+
+        try (FileWriter writer = new FileWriter(file)) {
+            for (String contact : newContacts) {
+                writer.write(contact + "\n");
+            }
+            System.out.println("Contact deleted.");
+        } catch (IOException e) {
+            System.out.println("Error deleting contact: " + e.getMessage());
+        }
+    }
+}
