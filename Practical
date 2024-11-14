@@ -1,0 +1,56 @@
+import java.io.File;
+import java.util.Scanner;
+import java.util.Stack;
+
+class Practical {
+    public static void main(String[] args) {
+        File file = new File("expressions.txt");
+        
+        try (Scanner read = new Scanner(file)) {
+            while (read.hasNextLine()) {
+                String msg = read.nextLine();
+                if (isWellDefined(msg)) {
+                    System.out.println("Well Defined");
+                } else {
+                    System.out.println("Not Well Defined");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public static boolean isWellDefined(String expression) {
+        Stack<Character> stack = new Stack<>();
+        
+        for (char c : expression.toCharArray()) {
+            if (isOpeningParenthesis(c)) {
+                stack.push(c);
+            } else if (isClosingParenthesis(c)) {
+                if (stack.isEmpty()) {
+                    return false;
+                }
+                char top = stack.pop();
+                if (!isMatchingPair(top, c)) {
+                    return false;
+                }
+            }
+        }
+        
+        return stack.isEmpty();
+    }
+
+    public static boolean isOpeningParenthesis(char c) {
+        return c == '(' || c == '[' || c == '{';
+    }
+
+    public static boolean isClosingParenthesis(char c) {
+        return c == ')' || c == ']' || c == '}';
+    }
+
+    public static boolean isMatchingPair(char open, char close) {
+        return (open == '(' && close == ')') || 
+               (open == '[' && close == ']') || 
+               (open == '{' && close == '}');
+    }
+}
