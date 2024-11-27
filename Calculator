@@ -1,0 +1,131 @@
+import javax.swing.*;
+import java.awt.*;
+import javax.swing.JPanel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Calculator implements ActionListener{
+    static double result = 0;
+    static String operator = "";
+    static JLabel screen = new JLabel(operator); // Default text for the screen
+    static Font font = new Font("Arial", Font.BOLD, 15); // Larger font for buttons
+    static JFrame frame = new JFrame();
+    static JPanel panel = new JPanel();
+    static JButton one = new JButton("1");
+    static JButton two = new JButton("2");
+    static JButton three = new JButton("3");
+    static JButton four = new JButton("4");
+    static JButton five = new JButton("5");
+    static JButton six = new JButton("6");
+    static JButton seven = new JButton("7");
+    static JButton eight = new JButton("8");
+    static JButton nine = new JButton("9");
+    static JButton zero = new JButton("0");
+    static JButton divide = new JButton("/");
+    static JButton minus = new JButton("-");
+    static JButton plus = new JButton("+");
+    static JButton multiply = new JButton("x");
+    static JButton equals = new JButton("=");
+    static JButton clear = new JButton("C");
+    static JPanel screenPanel = new JPanel();
+
+    public static void main(String[] args) {
+        // Set the layout for the panel (4x4 grid)
+        panel.setLayout(new GridLayout(4, 4, 10, 10)); // 4 rows x 4 columns with 10px gaps
+        panel.setBorder(BorderFactory.createEmptyBorder(120, 20, 20, 20));
+
+        // Set font for all buttons
+        JButton[] buttons = {one, two, three, four, five, six, seven, eight, nine, zero,
+                             divide, multiply, plus, minus, equals, clear};
+        for (JButton button : buttons) {
+            button.setFont(font);
+        }
+
+        // Add buttons to the panel in order
+        panel.add(seven);
+        panel.add(eight);
+        panel.add(nine);
+        panel.add(divide);
+        panel.add(four);
+        panel.add(five);
+        panel.add(six);
+        panel.add(multiply);
+        panel.add(one);
+        panel.add(two);
+        panel.add(three);
+        panel.add(minus);
+        panel.add(clear);
+        panel.add(zero);
+        panel.add(equals);
+        panel.add(plus);
+        
+        screenPanel.setBackground(new Color(224, 224,244));
+        screenPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        screenPanel.setBounds(18, 35, 350, 70);
+        // Screen settings
+        screen.setFont(new Font("Arial", Font.BOLD, 30));
+        screen.setBounds(30, 25, 350, 100);
+
+        // Frame settings
+        frame.setLayout(new BorderLayout());
+        frame.add(screen);
+        frame.add(screenPanel);
+        frame.add(panel, BorderLayout.CENTER); // Add the button panel in the center
+        frame.setSize(400, 600); // Adjusted frame size
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Exit on close
+        frame.setVisible(true); // Make the frame visible
+        frame.setResizable(false);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String operator = "";
+        boolean operatorChosen = false;
+
+        if(e.getSource() == one) {
+            operator += "1";
+        }
+        if(e.getSource() == two) {
+            operator += "2";
+        }
+        if(e.getSource() == three) {
+            operator += "3";
+        }
+        if(e.getSource() == four) {
+            operator += "4";
+        }
+        if(e.getSource() == five) {
+            operator += "5";
+        }
+        if(e.getSource() == six) {
+            operator += "6";
+        }
+        if(e.getSource() == seven) {
+            operator += "7";
+        }
+        if(e.getSource() == eight) {
+            operator += "8";
+        }
+        if(e.getSource() == nine) {
+            operator += "9";
+        }
+        if(e.getSource() == zero) {
+            operator += "0";
+        }
+        if(e.getSource() == divide) {
+            operator += "/";
+        }
+        if(e.getSource() == minus) {
+            operator += "-";
+        }
+        if(e.getSource() == multiply) {
+            operator += "*";
+        }
+        if(e.getSource() == plus) {
+            operator += "+";
+        }
+        if(e.getSource() == equals) {
+            result = Double.parseDouble(operator);
+        }
+    }
+}
