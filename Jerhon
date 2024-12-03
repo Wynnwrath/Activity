@@ -1,0 +1,134 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+
+public class GUI implements ActionListener {
+   public File USERS = new File("username.txt");
+   public File PASS = new File("password.txt");
+   public static JPanel panel;
+   public static JFrame frame;
+   public static JLabel labelTitle;
+   public static JLabel labeluser;
+   public static JTextField userInput;
+   public static JLabel labelpassword;
+   public static JPasswordField userPass;
+   public static JButton buttonLogin;
+   public static JButton buttonRegister;
+   public static JLabel success;
+
+   public static void main(String[] args) {
+      panel = new JPanel();
+      frame = new JFrame("Login GUI");
+      frame.setSize(450, 250);
+      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      frame.add(panel);
+      frame.setResizable(false);
+      panel.setLayout(null);
+
+      labelTitle = new JLabel("MINECRAFT"); // Title
+      labelTitle.setBounds(180, 10, 100, 100);
+      panel.add(labelTitle);
+
+      labeluser = new JLabel("Username: "); // username text
+      labeluser.setBounds(100, 80, 80, 25);
+      panel.add(labeluser);
+
+      userInput = new JTextField(20); // input user
+      userInput.setBounds(180, 80, 150, 25);
+      panel.add(userInput);
+
+      labelpassword = new JLabel("Password"); // Password text
+      labelpassword.setBounds(100, 110, 80, 20);
+      panel.add(labelpassword);
+
+      userPass = new JPasswordField(20); // input password
+      userPass.setBounds(180, 110, 150, 25);
+      panel.add(userPass);
+
+      buttonLogin = new JButton("LogIn"); // login button
+      buttonLogin.setBounds(110, 140, 100, 25);
+      buttonLogin.setActionCommand("login");
+      buttonLogin.addActionListener(new GUI());
+      panel.add(buttonLogin);
+
+      buttonRegister = new JButton("Register"); // register button
+      buttonRegister.setBounds(225, 140, 100, 25);
+      buttonRegister.setActionCommand("register");
+      buttonRegister.addActionListener(new GUI());
+      panel.add(buttonRegister);
+
+      success = new JLabel("");
+      success.setBounds(110, 170, 200, 25);
+      panel.add(success);
+
+      frame.setLocationRelativeTo(null);
+      frame.setVisible(true);
+   }
+
+   public void LoginPerformed(String user, String pass) { // LOGIN PERFORMED
+      boolean exists = true;
+
+      try (BufferedReader readerUser = new BufferedReader(new FileReader(USERS));
+            BufferedReader readerPass = new BufferedReader(new FileReader(PASS))) {
+         String username;
+         String password;
+         while ((username = readerUser.readLine()) != null) {
+            password = readerPass.readLine();
+            if (username.trim().equals(user) && password.trim().equals(pass)) {
+               success.setText("Login Successfully!!");
+               exists = false;
+               frame.dispose();
+               Calculator calculator = new Calculator();
+               break;
+            }
+         }
+         if (exists) {
+            success.setText("Wrong Username or Password");
+         }
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+   } // ENDS
+
+   public void RegisterPerformed(String user, String pass) { // REGISTER PERFORMED
+      boolean exists = false;
+      try (BufferedReader readerUser = new BufferedReader(new FileReader(USERS));
+            BufferedReader readerPass = new BufferedReader(new FileReader(PASS))) {
+         String password;
+         String username;
+         while ((username = readerUser.readLine()) != null && (password = readerPass.readLine()) != null) {
+            if (username.trim().equals(user) && password.trim().equals(pass)) {
+               success.setText("Username already exists!");
+               exists = true;
+               break;
+            }
+         }
+
+         if (!exists) {
+            // Append the new username and password to the files
+            try (FileWriter registerUser = new FileWriter(USERS, true);
+                  FileWriter registerPass = new FileWriter(PASS, true)) {
+
+               registerUser.append(user).append("\n");
+               registerPass.append(pass).append("\n");
+               success.setText("Registration Successful!!");
+            }
+         }
+      } catch (IOException e) {
+         success.setText("Error reading files");
+      }
+   }
+
+   @Override
+   public void actionPerformed(ActionEvent e) {
+      String user = userInput.getText();
+      String pass = new String(userPass.getPassword()); // Correctly handle password input
+      if (e.getActionCommand().equals("login")) {
+         LoginPerformed(user, pass);
+      } else if (e.getActionCommand().equals("register")) {
+         RegisterPerformed(user, pass);
+      }
+   }
+}
