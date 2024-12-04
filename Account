@@ -1,0 +1,21 @@
+// Source code is decompiled from a .class file using FernFlower decompiler.
+import java.awt.Color;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+
+public class Brocode {
+   public Brocode() {
+   }
+
+   public static void main(String[] var0) {
+      JFrame var1 = new JFrame();
+      var1.setTitle("Amongus");
+      var1.setDefaultCloseOperation(3);
+      var1.setResizable(false);
+      var1.setSize(200, 200);
+      var1.setVisible(false);
+      ImageIcon var2 = new ImageIcon("mikapikazo.png");
+      var1.setIconImage(var2.getImage());
+      var1.getContentPane().setBackground(new Color(123, 25, 50));
+   }
+}
