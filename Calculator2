@@ -1,0 +1,107 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JPanel;
+
+public class Calculator implements ActionListener {
+    static double num1 = 0, num2 = 0, result = 0;
+    static String operator = "";
+    static JLabel screen = new JLabel("0");
+    static Font font = new Font("Arial", Font.BOLD, 20);
+    static JFrame frame = new JFrame();
+    static JPanel panel = new JPanel();
+    static JButton[] buttons = new JButton[17];
+    static String[] buttonLabels = {
+        "7", "8", "9", "/",
+        "4", "5", "6", "x",
+        "1", "2", "3", "-",
+        "+", "0", ".", "=",
+        "C"
+    };
+
+    public Calculator(){
+        frame.setTitle("Calculator");
+        frame.setSize(400, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setLayout(null);
+
+        // Screen
+        JPanel screenPanel = new JPanel();
+        screenPanel.setBackground(new Color(224, 224, 244));
+        screenPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        screenPanel.setBounds(20, 20, 350, 80);
+        screenPanel.setLayout(new BorderLayout());
+        screen.setFont(new Font("Arial", Font.BOLD, 30));
+        screen.setHorizontalAlignment(SwingConstants.RIGHT);
+        screenPanel.add(screen);
+        frame.add(screenPanel);
+
+        panel.setLayout(new GridLayout(5, 4, 10, 10)); 
+        panel.setBounds(20, 120, 350, 400);
+
+        for (int i = 0; i < 17; i++) {
+            buttons[i] = new JButton(buttonLabels[i]);
+            buttons[i].setFont(font);
+            buttons[i].addActionListener(this);
+            panel.add(buttons[i]);
+        }
+
+        frame.add(panel);
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+
+if ((command.charAt(0) >= '0' && command.charAt(0) <= '9')) {
+    if (operator.isEmpty()) {
+        if (screen.getText().equals("0")) {
+            screen.setText(command);
+        } else {
+            screen.setText(screen.getText() + command);
+        }
+        num1 = Double.parseDouble(screen.getText());
+    } else {
+        if (screen.getText().equals("0") || screen.getText().equals(String.valueOf(num1))) {
+            screen.setText(command); 
+        } else {
+            screen.setText(screen.getText() + command); 
+        }
+        num2 = Double.parseDouble(screen.getText());
+    }
+}
+else if (command.equals(".")) {
+    if (!screen.getText().contains(".")) {
+        screen.setText(screen.getText() + ".");
+    }
+}
+else if (command.equals("C")) {
+    num1 = num2 = result = 0;
+    operator = "";
+    screen.setText("0");
+}
+else if (command.equals("=")) {
+    switch (operator) {
+        case "+": result = num1 + num2; break;
+        case "-": result = num1 - num2; break;
+        case "/": result = num1 / num2; break;
+        case "x": result = num1 * num2; break;
+    }
+    screen.setText(String.valueOf(result));
+    num1 = result;
+    num2 = 0;
+    operator = "";
+}
+else {
+    if (!screen.getText().isEmpty() && operator.isEmpty()) {
+        operator = command;
+        screen.setText(String.valueOf(num1));
+    }
+}
+
+    }
+}
