@@ -1,0 +1,113 @@
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import javax.swing.*;
+import javax.swing.JPanel;
+
+public class Login implements ActionListener {
+
+    private static JLabel text, userLabel, passLabel, success, fail;
+    private static JTextField userText;
+    private static JPasswordField passText;
+    private static JButton loginButton, regButton;
+    private static JPanel panel;
+    private static JFrame frame;
+    public ArrayList<Account> acc = new ArrayList<>();
+
+    public static void main(String[] args) {
+        new Login().createLoginUI();
+    }
+
+    public void createLoginUI() {
+        frame = new JFrame("Login");
+        panel = new JPanel();
+        panel.setLayout(null);
+
+        text = new JLabel("Login");
+        text.setBounds(190, 10, 100, 30);
+        text.setFont(new Font("Arial", Font.BOLD, 16));
+        panel.add(text);
+
+        userLabel = new JLabel("Username:");
+        userLabel.setBounds(75, 70, 90, 27);
+        userLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        panel.add(userLabel);
+
+        userText = new JTextField();
+        userText.setBounds(170, 70, 167, 27);
+        panel.add(userText);
+
+        passLabel = new JLabel("Password:");
+        passLabel.setBounds(75, 110, 90, 27);
+        passLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        panel.add(passLabel);
+
+        passText = new JPasswordField();
+        passText.setBounds(170, 110, 167, 27);
+        passText.setEchoChar('*');
+        panel.add(passText);
+
+        loginButton = new JButton("Login");
+        loginButton.setBounds(120, 150, 72, 27);
+        loginButton.addActionListener(this);
+        panel.add(loginButton);
+
+        regButton = new JButton("Register");
+        regButton.setBounds(220, 150, 100, 27);
+        regButton.addActionListener(this);
+        panel.add(regButton);
+
+        success = new JLabel("Login Successful!");
+        success.setBounds(75, 200, 200, 25);
+        success.setFont(new Font("Arial", Font.PLAIN, 14));
+        success.setVisible(false);
+        panel.add(success);
+
+        fail = new JLabel("Login and password do not match.");
+        fail.setBounds(75, 200, 250, 25);
+        fail.setFont(new Font("Arial", Font.PLAIN, 14));
+        fail.setVisible(false);
+        panel.add(fail);
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(450, 350);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.add(panel);
+        frame.setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource().equals(loginButton)) {
+            login();
+        } else if (e.getSource().equals(regButton)) {
+            new Register(this);
+        }
+    }
+
+    private void login() {
+        String user = userText.getText();
+        String pass = new String(passText.getPassword());
+        boolean isSuccess = false;
+    
+        for (Account account : acc) {
+            if (user.equals(account.getUser()) && pass.equals(account.getPass())) {
+                isSuccess = true;
+                break;
+            }
+        }
+    
+        if (isSuccess) {
+            success.setVisible(true);
+            fail.setVisible(false);
+            frame.dispose();  
+            new Calculator(); 
+        } else {
+            success.setVisible(false);
+            fail.setVisible(true);
+        }
+    }
+    
+}
