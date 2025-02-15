@@ -1,0 +1,87 @@
+using System;
+
+namespace DivideAndConquer;
+
+class Program
+{
+    static void Main(String[] args)
+    {
+        int[] numbers = {5, 7, 8, 12, 4};
+        Console.WriteLine("Original Array:");
+        printArray(numbers);
+
+        MergeSort(numbers, 0, numbers.Length - 1);
+
+        Console.WriteLine("\nSorted Array:"); //Print the sorted array
+        printArray(numbers);
+    }
+
+    static void MergeSort(int[] array, int left, int right)
+    {
+        if (left < right)
+        {
+            int mid = left + (right - left) / 2; //Correct calculation in finding the middle
+            MergeSort(array, left, mid);
+            MergeSort(array, mid + 1, right);
+            Merge(array, left, mid, right);
+        }
+    }
+
+    static void Merge(int[] array, int left, int mid, int right)
+    {
+        int n1 = mid - left + 1;
+        int n2 = right - mid;
+
+        int[] leftArray = new int[n1];
+        int[] rightArray = new int [n2];
+
+        for(int i = 0; i < n1; i++)
+        {
+            leftArray[i] = array[left + i]; //Correct calculation in copying elements into the left subarray
+        }   //From leftArray[i] = array[left + 1] -> leftArray[i] = array[left + i]
+
+        for(int j = 0; j < n2; j++)
+        {
+            rightArray[j] = array[mid + 1 + j];
+        }
+
+        int iIndex = 0, jIndex = 0, kIndex = left;
+
+        while(iIndex < n1 && jIndex < n2) //jIndex < n2 instead of jindex = 0
+        {
+            if(leftArray[iIndex] <= rightArray[jIndex])
+            {
+                array[kIndex++] = leftArray[iIndex++];
+            }
+            else
+            {
+                array[kIndex++] = rightArray[jIndex++];
+            }
+        }
+
+        while (iIndex < n1) //Copy remaining elements from leftArray
+        {
+            array[kIndex++] = leftArray[iIndex++];
+        }
+
+        while (jIndex < n2) //Copy remaining elements from rightArray
+        {
+            array[kIndex++] = rightArray[jIndex++];
+        }
+    }
+
+    static void printArray(int[] array) //Method to print the array
+    {
+        if(!(array.Length == 0))
+        {
+            foreach(int i in array)
+            {
+                Console.Write(i + "  ");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Array is empty");
+        }
+    }
+}
