@@ -1,0 +1,30 @@
+ ER model (Entity Relationship model): Forms the basis of an Entity Relationship Diagram (ERD).
+• ERD (Entity Relationship Diagram): Represents the conceptual database as viewed by the end user and depicts the database's main components: Entities, Attributes, and Relationships.
+• Entities: Refers to an entity set (not a single entity occurrence) and corresponds to a table (not a row) in a relational environment. In both Chen and Crow’s Foot models, an entity is represented by a rectangle containing its name, which is typically a noun written in capital letters.
+• Attributes: Characteristics of entities. In the Chen model, they are represented by ovals connected to the entity rectangle, each containing the attribute's name. In the Crow’s Foot model, attributes are written in an attribute box below the entity rectangle.
+• Domain: An attribute’s set of possible values.
+• Identifiers (Primary Keys): Key attributes that are underlined in the ERD and in frequently used table structure shorthand.
+• Composite Primary Key: A primary key that is composed of more than one attribute.
+• Composite attribute: An attribute that can be subdivided.
+• Simple attribute: An attribute that cannot be subdivided.
+• Single-valued attribute: An attribute that can have only a single value.
+• Multivalued attributes: Attributes that can have many values.
+• Derived Attributes: An attribute whose value may be calculated (derived) from other attributes. It need not be physically stored within the database and can be derived using an algorithm.
+• Relationships: An association between entities.
+• Participants: The entities that participate in a relationship.
+• Connectivity: Used to describe the relationship classification.
+• Cardinality: Expresses the minimum and maximum number of entity occurrences associated with one occurrence of a related entity. This is established by business rules.
+• Existence dependence: Occurs when an entity exists in the database only if it is associated with another related entity occurrence.
+• Existence independence: Occurs when an entity can exist apart from one or more related entities. Such an entity is sometimes referred to as a strong or regular entity.
+• Weak (non-identifying) relationships: Exists if the primary key (PK) of the related entity does not contain the PK component of the parent entity.
+• Strong (Identifying) Relationships: Exists when the primary key (PK) of the related entity contains the PK component of the parent entity.
+• Weak entity: An entity that meets two conditions: it is existence-dependent (cannot exist without the entity with which it has a relationship), and its primary key is partially or totally derived from the parent entity in the relationship.
+• Optional participation: One entity occurrence does not require a corresponding entity occurrence in a particular relationship.
+• Mandatory participation: One entity occurrence requires a corresponding entity occurrence in a particular relationship.
+• Relationship Degree: Indicates the number of entities or participants associated with a relationship.
+• Unary relationship: An association that is maintained within a single entity.
+• Binary relationship: An association where two entities are associated.
+• Ternary relationship: An association where three entities are associated.
+• Recursive Relationships: A relationship that can exist between occurrences of the same entity set and is naturally found within a unary relationship.
+• Composite Entities: Also known as bridge entities, they are composed of the primary keys of each of the entities to be connected and may contain additional attributes not involved in the connective process.
+• Iterative process: Database design is an iterative process, meaning it is based on the repetition of processes and procedures.
